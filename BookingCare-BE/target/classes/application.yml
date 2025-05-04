@@ -1,0 +1,52 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: BookingCare-BE
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/hospitalmanagement
+    username: root
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        enable_lazy_load_no_trans: true
+        format_sql: true
+    show-sql: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: kimhoando2003@gmail.com
+    password: sleb vdcl flvl pywb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+api:
+  prefix: api
+
+jwt:
+  expiration: 25920000
+  secret:
+    key: TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=
+
+cloudinary:
+  cloud_name: dnrowyoq8
+  api_key: 134172169477599
+  api_secret: _18XjGqPPjkBEAK-alzVI4V01rI

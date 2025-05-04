@@ -1,0 +1,64 @@
+services:
+  database:
+    image: mysql:8.0
+    container_name: bookingcare-mysql
+    environment:
+      MYSQL_DATABASE: hospitalmanagement
+      MYSQL_ROOT_PASSWORD: 123456
+      LANG: C.UTF-8
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./script_db.sql:/docker-entrypoint-initdb.d/script_db.sql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+    networks:
+      - bookingcare-network
+  backend:
+    build:
+      context: .
+      dockerfile: docker/dockerfile.be
+      args:
+        - BUILDPLATFORM=linux/amd64
+    container_name: bookingcare-be
+    image: dokimhoan2003/bookingcare-be-i:1.0
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://bookingcare-mysql:3306/hospitalmanagement
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123456
+      CLOUDINARY_CLOUD_NAME: dvruwaoq3
+      CLOUDINARY_API_KEY: 132172129417526
+      CLOUDINARY_API_SECRET: _18XjMqPLjkBEEK-alZVI4CV041rI
+      EMAIL_USERNAME: kimhoando2003@gmail.com
+      EMAIL_APP_PASSWORD: sacb vavl fwel qvwb
+    ports:
+      - 8081:8081
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - bookingcare-network
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/dockerfile.fe
+      args:
+        - BUILDPLATFORM=linux/amd64
+    container_name: bookingcare-fe
+    image: dokimhoan2003/bookingcare-fe-i:1.0
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    networks:
+      - bookingcare-network
+volumes:
+  mysql_data:
+networks:
+  bookingcare-network:
+    driver: bridge
